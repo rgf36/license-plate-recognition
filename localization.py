@@ -9,10 +9,10 @@ print(car_image.shape)#prints the length and width of the image in pixels
 #the next line is optional. A gray scale pixel in skimage ranges between 0 and 1. Multiplying it with 255 will make it easier to relate to.
 
 gray_car_image = car_image * 255
-fig, (ax1, ax2) = plt.subplots(1, 2)#creates a figure with two subplots side by side
+fig, (ax1, ax2) = plt.subplots(1, 2)#creates a single figure with a grid of subplots arranged in 1 row and 2 columns (so one left one right). The subplot on the left is ax1 and the subplot on the right is ax2.
 ax1.imshow(gray_car_image, cmap="gray")#Displays the grayscale image in the first subplot
 threshold_value = threshold_otsu(gray_car_image)#Calculates the threshold value for the grayscale image to distinguish between foreground and background pixels.
-binary_car_image = gray_car_image > threshold_value #Create a binary image by thresholding: pixels above threshold are True (white) and others are False (black)
+binary_car_image = gray_car_image > threshold_value #Create a binary image by thresholding: pixels above threshold are True (white) and others are False (black). binary_car_image is a 2D array of booleans.
 ax2.imshow(binary_car_image, cmap="gray") #Display the binary image in the second subplot
 plt.show() #Show both images
 

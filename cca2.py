@@ -51,9 +51,9 @@ plt.show()
 
 
 
-#the measure.label function scans the input image (which should be binary: foreground pixels are 1 or True or white, and background pixels are 0 or False or black). A binary image is a 2D array where each value is either a 0 or 1, for background or foreground, black or white. The output of this function takes that binary image and labeles regions with a lot of connected white pixels. It outputs a 2D array where the first grouped region is all assigned a value of 1, the second grouped region is all assigned a value of 2, the third grouped region is all assigned a value of 3, etc. And the background pixels are still 0.
+#the measure.label function scans the input image (which should be binary: foreground pixels are 1 or True or white, and background pixels are 0 or False or black). A binary image is a 2D array where each value is either a False or True value, for background or foreground, black or white. The output of this function takes that binary image and labeles regions with a lot of connected white pixels. It outputs a 2D array where the first grouped region is all assigned a value of 1, the second grouped region is all assigned a value of 2, the third grouped region is all assigned a value of 3, etc. And the background pixels are 0.
 #for example
-# Input (binary image)
+# Input (binary image) - note: the input binary image will be a 2D array of True and False values not ones and zeros. Here I use 1s and 0s for easily comparing the input and output
 #   [[0, 1, 1, 0, 0],
 #   [0, 1, 1, 0, 1],
 #   [0, 0, 0, 0, 1]]
