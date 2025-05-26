@@ -34,12 +34,12 @@ for regions in regionprops(labelled_plate):#iterate through each detected region
     region_width = x1 - x0 #get region_height and region_width
 
     if region_height > min_height and region_height < max_height and region_width > min_width and region_width < max_width:
-        roi = license_plate[y0:y1, x0:x1] #extract region of interest (ROI) corresponding to that character. roi is a 2D array with only the pixels inside the bounding box for the detected character region
+        roi = license_plate[y0:y1, x0:x1] #extract region of interest (ROI) corresponding to that character. roi is a 2D array with only the pixels inside the bounding box for the detected character region. Its like a cropped image of just the character.
 
         # draw a red bordered rectangle over the character
-        rect_border = patches.Rectangle((x0, y0), x1 - x0, y1 - y0, edgecolor = "red", linewidth = 2, fill = False) #draw a red rectangle around the detected character on the plot
+        rect_border = patches.Rectangle((x0, y0), x1 - x0, y1 - y0, edgecolor = "red", linewidth = 2, fill = False) #creates red rectangle around detected character
 
-        ax1.add_patch(rect_border)
+        ax1.add_patch(rect_border)#adds the red rectangle to the subplot
 
         # resize the characters to 20x20 and then append each character into the characters list
         resized_char = resize(roi, (20, 20))
@@ -48,7 +48,24 @@ for regions in regionprops(labelled_plate):#iterate through each detected region
         # this is just to keep track of the arrangement of the characters
         column_list.append(x0)
 
-plt.show()
+plt.show()#show the plot
+
+
+#shows the resized characters -delete later
+if characters:
+    # Pair each character with its x-coordinate, then sort by x-coordinate
+    sorted_chars = [char for _, char in sorted(zip(column_list, characters))]
+    plt.figure(figsize=(10, 2))
+    for i, char_img in enumerate(sorted_chars):
+        plt.subplot(1, len(sorted_chars), i + 1)
+        plt.imshow(char_img, cmap='gray')
+        plt.axis('off')
+    plt.show()
+else:
+    print("No characters detected.")
+
+
+
 
 
 #This part of the program actually detects the individual characters inside of the license plate and shows a plot of the license plate, with red rectangles around each of the characters.
