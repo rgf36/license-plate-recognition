@@ -12,7 +12,7 @@ import cca2 #import cca2 module (contains plate_like_objects)
 # license plate. We'll fix this later
 
 # the invert was done so as to convert the black pixel to white pixel and vice versa
-license_plate = np.invert(cca2.plate_like_objects[2]) #invert the image so the black pixels become white and vice versa
+license_plate = np.invert(cca2.plate_like_objects[2]) #invert the license plate image so the black pixels become white and vice versa
 
 labelled_plate = measure.label(license_plate) #label connected regions in the binary license plate image
 
@@ -64,6 +64,10 @@ plt.show()
 #   [[0, 1, 1, 0, 0],
 #   [0, 1, 1, 0, 2],
 #   [0, 0, 0, 0, 2]]
+
+
+#The measure.label function will label any group of at least one connected foreground pixel (value 1 or True) as a region. There is no minimum size by default so even a single pixel will be labeled as its own region. If you want to filter out small regions, you nmeed to do that yourself (as you do with if region.area < 50:    continue)
+
 
 #bounding box
 #y0, x0, y1, x1 = regions.bbox
