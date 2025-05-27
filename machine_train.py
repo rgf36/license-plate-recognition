@@ -32,7 +32,7 @@ def read_training_data(training_directory): #function for reading training data 
             image_data.append(flat_bin_image) #add flattened image data to the list
             target_data.append(each_letter) #add images corresponding letter to the list
 
-        return(np.array(image_data), np.array(target_data)) #converts list to numpy arrays and returns them
+    return(np.array(image_data), np.array(target_data)) #converts list to numpy arrays and returns them
     
 def cross_validation(model, num_of_fold, train_data, train_label):
     # this uses the concept of cross validation to measure the accuracy
@@ -42,7 +42,7 @@ def cross_validation(model, num_of_fold, train_data, train_label):
     # and the remaining 3/4 for the training
     accuracy_result = cross_val_score(model, train_data, train_label, cv=num_of_fold) #perform cross validation and get the accuracy scores for each fold. Returns a NumPy array of scores, one score for each fold.
 
-    print("Cross Validation Result for ", str(num_of_fold), " -fold")
+    print("Cross Validation Result for", str(num_of_fold), "-fold")
 
     print(accuracy_result * 100)
 
@@ -70,7 +70,7 @@ save_directory = os.path.join(current_dir, 'models/svc/')
 if not os.path.exists(save_directory):
     os.makedirs(save_directory)
 joblib.dump(svc_model, save_directory + '/svc.pkl')
-
+#save_directory is being made equal to its absolute path. If it it doesn't exist, then make it. Then joblib.dump saves the trained svc model object to a file named svc.pkl in the specified directory. You can later load this model using joblib.load() when you want to make predictions without retraining.
 
 
 
