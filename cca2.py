@@ -37,6 +37,13 @@ for region in regionprops(label_image):
 
 plt.show()
 
+# #show each image in plate_like_objects
+# for i, plate in enumerate(plate_like_objects):
+#     plt.figure()
+#     plt.imshow(plate, cmap="gray")
+#     plt.title(f"Plate-like object {i+1}")
+#     plt.axis('off')
+#     plt.show()
 
 
 

@@ -8,19 +8,19 @@ model_dir = os.path.join(current_dir, 'models/svc/svc.pkl')
 model = joblib.load(model_dir)
 
 classification_result = []
-for each_character in segmentation.characters:
+for each_character in segmentation.characters: #iterate through 20x20 images of individual license plate characters
     #converts it to a 1D array
     each_character = each_character.reshape(1, -1);
     result = model.predict(each_character)
     classification_result.append(result)
 
-print(classification_result)
+#print(classification_result)
 
 plate_string = ''
 for eachPredict in classification_result:
     plate_string += eachPredict[0]
 
-print(plate_string)
+#print(plate_string)
 
 # it's possible the characters are wrongly arranged
 # since that's a possibility, the column_list will be

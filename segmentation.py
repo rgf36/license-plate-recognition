@@ -11,8 +11,20 @@ import cca2 #import cca2 module (contains plate_like_objects)
 # for now I'll just use the plate_like_objects[2] since I know that's the
 # license plate. We'll fix this later
 
+#this is one method for deciding which item in plate_like_objects is the license plate. Here I find out which region has the lowest coordinate and I save its index. License plates are lower down in pictures of cars than the headlights. This could confuse the program if there is another part of the picture below the license plate that has roughly the same proportions as a license plate.
+licensePlateIndex = 0
+if len(cca2.plate_like_objects) > 1:
+    maxRow = cca2.plate_objects_cordinates[0][2]#maxRow variable to find the most bottom row that any plate_like_object gets to
+    maxIndex = 0 #I want the index of the plate_like_object that has the most bottom row
+    for i in range(len(cca2.plate_objects_cordinates)):
+        if cca2.plate_objects_cordinates[i][2] > maxRow:
+            maxRow = cca2.plate_objects_cordinates[i][2]
+            maxIndex = i
+    licensePlateIndex = maxIndex
+
+
 # the invert was done so as to convert the black pixel to white pixel and vice versa
-license_plate = np.invert(cca2.plate_like_objects[2]) #invert the license plate image so the black pixels become white and vice versa
+license_plate = np.invert(cca2.plate_like_objects[licensePlateIndex]) #invert the license plate image so the black pixels become white and vice versa
 
 labelled_plate = measure.label(license_plate) #label connected regions in the binary license plate image
 
