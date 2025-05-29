@@ -37,13 +37,38 @@ for region in regionprops(label_image):
 
 plt.show()
 
-# #show each image in plate_like_objects
-# for i, plate in enumerate(plate_like_objects):
-#     plt.figure()
-#     plt.imshow(plate, cmap="gray")
-#     plt.title(f"Plate-like object {i+1}")
-#     plt.axis('off')
-#     plt.show()
+#show each image in plate_like_objects
+for i, plate in enumerate(plate_like_objects):
+    plt.figure()
+    plt.imshow(plate, cmap="gray")
+    plt.title(f"Plate-like object {i+1}")
+    plt.axis('off')
+    plt.show()
+
+
+# on the image I'm using, the headlamps were categorized as a license plate
+# because their shapes were similar
+# for now I'll just use the plate_like_objects[2] since I know that's the
+# license plate. We'll fix this later
+
+#this is one method for deciding which item in plate_like_objects is the license plate. Here I find out which region has the lowest coordinate and I save its index. License plates are lower down in pictures of cars than the headlights. This could confuse the program if there is another part of the picture below the license plate that has roughly the same proportions as a license plate.
+# licensePlateIndex = 0
+# if len(plate_like_objects) > 1:
+#     maxRow = plate_objects_cordinates[0][2]#maxRow variable to find the most bottom row that any plate_like_object gets to
+#     maxIndex = 0 #I want the index of the plate_like_object that has the most bottom row
+#     for i in range(len(plate_objects_cordinates)):
+#         if plate_objects_cordinates[i][2] > maxRow:
+#             maxRow = plate_objects_cordinates[i][2]
+#             maxIndex = i
+#     licensePlateIndex = maxIndex
+
+
+
+
+
+
+
+
 
 
 

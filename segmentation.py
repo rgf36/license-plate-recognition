@@ -6,21 +6,50 @@ import matplotlib.patches as patches # import patches for drawing rectangles on 
 import matplotlib.pyplot as plt # import pyplot for plotting images
 import cca2 #import cca2 module (contains plate_like_objects)
 
-# on the image I'm using, the headlamps were categorized as a license plate
-# because their shapes were similar
-# for now I'll just use the plate_like_objects[2] since I know that's the
-# license plate. We'll fix this later
 
-#this is one method for deciding which item in plate_like_objects is the license plate. Here I find out which region has the lowest coordinate and I save its index. License plates are lower down in pictures of cars than the headlights. This could confuse the program if there is another part of the picture below the license plate that has roughly the same proportions as a license plate.
+def countChars(PLO):
+    counter = 0
+    invPLO = np.invert(PLO)
+    labeledPLO = measure.label(invPLO)
+
+    #Define character size constraints based on license plate dimensions: Height: 35% to 60% of plate height. Width: 5% to 15% of plate width. This will eliminate some.
+    character_dimensions = (0.35*invPLO.shape[0], 0.60*invPLO.shape[0], 0.05*invPLO.shape[1], 0.15*invPLO.shape[1])
+    min_height, max_height, min_width, max_width = character_dimensions
+
+    for regions in regionprops(labeledPLO):#iterate through each detected region in labeled plate image
+        y0, x0, y1, x1, = regions.bbox
+        region_height = y1 - y0
+        region_width = x1 - x0 #get region_height and region_width
+
+        if region_height > min_height and region_height < max_height and region_width > min_width and region_width < max_width:
+            counter += 1
+    return counter
+
+print("chars in plo index 0", countChars(cca2.plate_like_objects[0]))
+print("chars in plo index 1", countChars(cca2.plate_like_objects[1]))
+print("chars in plo index 2", countChars(cca2.plate_like_objects[2]))
+
+
+
+
 licensePlateIndex = 0
 if len(cca2.plate_like_objects) > 1:
-    maxRow = cca2.plate_objects_cordinates[0][2]#maxRow variable to find the most bottom row that any plate_like_object gets to
-    maxIndex = 0 #I want the index of the plate_like_object that has the most bottom row
-    for i in range(len(cca2.plate_objects_cordinates)):
-        if cca2.plate_objects_cordinates[i][2] > maxRow:
-            maxRow = cca2.plate_objects_cordinates[i][2]
+    maxCount = countChars(cca2.plate_like_objects[0]) #maxCount variable to find plate_like_object with the most detected characters
+    maxIndex = 0 #I want the index of the plate_like_object that has the most detected characters in it
+    for i in range(len(cca2.plate_like_objects)):
+
+        if countChars(cca2.plate_like_objects[i]) > maxCount:
+            maxCount = countChars(cca2.plate_like_objects[i])
             maxIndex = i
+
     licensePlateIndex = maxIndex
+
+
+
+
+
+
+
 
 
 # the invert was done so as to convert the black pixel to white pixel and vice versa
@@ -48,6 +77,8 @@ for regions in regionprops(labelled_plate):#iterate through each detected region
     if region_height > min_height and region_height < max_height and region_width > min_width and region_width < max_width:
         roi = license_plate[y0:y1, x0:x1] #extract region of interest (ROI) corresponding to that character. roi is a 2D array with only the pixels inside the bounding box for the detected character region. Its like a cropped image of just the character.
 
+        counter += 1
+
         # draw a red bordered rectangle over the character
         rect_border = patches.Rectangle((x0, y0), x1 - x0, y1 - y0, edgecolor = "red", linewidth = 2, fill = False) #creates red rectangle around detected character
 
@@ -61,7 +92,7 @@ for regions in regionprops(labelled_plate):#iterate through each detected region
         column_list.append(x0)
 
 plt.show()#show the plot
-
+print(counter)
 
 #shows the resized characters -delete later
 if characters:
