@@ -4,7 +4,7 @@ from skimage import measure # import measure module for image region analysis
 from skimage.measure import regionprops # import regionproprs to get properties of labeled regions
 import matplotlib.patches as patches # import patches for drawing rectangles on images
 import matplotlib.pyplot as plt # import pyplot for plotting images
-from skimage.filters import threshold_yen #import the Otsu thresholding function from skimage. This function calculates an optimal threshold value for creating a grayscale image using Otsu's method. This value separates the pixel intensities into two classes (foreground and background).
+from skimage.filters import threshold_otsu #import the Otsu thresholding function from skimage. This function calculates an optimal threshold value for creating a grayscale image using Otsu's method. This value separates the pixel intensities into two classes (foreground and background).
 import cca2 #import cca2 module (contains plate_like_objects)
 
 
@@ -48,13 +48,14 @@ if len(cca2.plate_like_objects) > 1:
 
 
 
-#now that we know which part of the picture is the license plate I want to do a threshold on just the license plate. When I thresholded the whole picture, it might have cut out some pixels in the license plate itself. If I do another threshold on just the license plate to create a binary picture, then it will be more accuracte.
 
+
+#now that we know which part of the picture is the license plate I want to do a threshold on just the license plate. When I thresholded the whole picture, it might have cut out some pixels in the license plate itself. If I do another threshold on just the license plate to create a binary picture, then it will be more accuracte.
 
 gray_license_plate = cca2.gray_plate_like_objects[licensePlateIndex]
 # threshold_value = int(input("please enter a threshold"))
 # threshold_value = 120#Calculates the threshold value for the grayscale image to distinguish between foreground and background pixels.
-threshold_value = threshold_yen(gray_license_plate)
+threshold_value = threshold_otsu(gray_license_plate)
 binary_license_plate = gray_license_plate > threshold_value #Create 
 
 print(threshold_value)
@@ -65,7 +66,40 @@ plt.title("Binary License Plate")
 plt.axis('off')
 plt.show()
 
-binary_license_plate[-10:, :] = True
+
+
+#Here I want to detect characters in the license plate again. It may not detect all of them because there could be a shadow or a design in the license plate that connects to one of the letters, making that letter not be detected. So what I will do is for the letters it does detect, I will take the lowest point that any detected character reaches, and I will basically cut off all of the content below that since all of the letters are supposed to be inline. This way I can detect characters again, and every character will correctly be detected.
+
+
+def cutOffContent(license_plate):
+    counter = 0
+    highestPoints = []
+    lowestPoints = []
+    inv_license_plate = np.invert(license_plate)
+    labeled_license_plate = measure.label(inv_license_plate)
+
+    #Define character size constraints based on license plate dimensions: Height: 35% to 60% of plate height. Width: 5% to 15% of plate width. This will eliminate some.
+    character_dimensions = (0.35*inv_license_plate.shape[0], 0.60*inv_license_plate.shape[0], 0.05*inv_license_plate.shape[1], 0.15*inv_license_plate.shape[1])
+    min_height, max_height, min_width, max_width = character_dimensions
+
+    for regions in regionprops(labeled_license_plate):#iterate through each detected region in labeled plate image
+        y0, x0, y1, x1, = regions.bbox
+        region_height = y1 - y0
+        region_width = x1 - x0 #get region_height and region_width
+
+        if region_height > min_height and region_height < max_height and region_width > min_width and region_width < max_width:
+            highestPoints.append(y0)
+            lowestPoints.append(y1)
+            counter += 1
+
+    if counter > 0:
+        highestPoint = min(highestPoints)
+        lowestPoint = max(lowestPoints)
+        license_plate[:highestPoint, :] = True
+        license_plate[lowestPoint:, :] = True
+
+cutOffContent(binary_license_plate)
+#binary_license_plate[-10:, :] = True
 
 plt.figure()
 plt.imshow(binary_license_plate, cmap='gray')
