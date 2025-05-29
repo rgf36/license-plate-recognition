@@ -4,9 +4,11 @@ from skimage import measure # import measure module for image region analysis
 from skimage.measure import regionprops # import regionproprs to get properties of labeled regions
 import matplotlib.patches as patches # import patches for drawing rectangles on images
 import matplotlib.pyplot as plt # import pyplot for plotting images
+from skimage.filters import threshold_yen #import the Otsu thresholding function from skimage. This function calculates an optimal threshold value for creating a grayscale image using Otsu's method. This value separates the pixel intensities into two classes (foreground and background).
 import cca2 #import cca2 module (contains plate_like_objects)
 
 
+# This is another method for determining which index in plate_like_objects is the real license plate. In the code below I detect characters in each plate like object and I count them. Then I have a for loop that states that the plate_like_object with the highest number of detected characters, will have its index saved to licensePlateIndex.
 def countChars(PLO):
     counter = 0
     invPLO = np.invert(PLO)
@@ -25,9 +27,9 @@ def countChars(PLO):
             counter += 1
     return counter
 
-print("chars in plo index 0", countChars(cca2.plate_like_objects[0]))
-print("chars in plo index 1", countChars(cca2.plate_like_objects[1]))
-print("chars in plo index 2", countChars(cca2.plate_like_objects[2]))
+# print("chars in plo index 0", countChars(cca2.plate_like_objects[0]))
+# print("chars in plo index 1", countChars(cca2.plate_like_objects[1]))
+# print("chars in plo index 2", countChars(cca2.plate_like_objects[2]))
 
 
 
@@ -46,6 +48,31 @@ if len(cca2.plate_like_objects) > 1:
 
 
 
+#now that we know which part of the picture is the license plate I want to do a threshold on just the license plate. When I thresholded the whole picture, it might have cut out some pixels in the license plate itself. If I do another threshold on just the license plate to create a binary picture, then it will be more accuracte.
+
+
+gray_license_plate = cca2.gray_plate_like_objects[licensePlateIndex]
+# threshold_value = int(input("please enter a threshold"))
+# threshold_value = 120#Calculates the threshold value for the grayscale image to distinguish between foreground and background pixels.
+threshold_value = threshold_yen(gray_license_plate)
+binary_license_plate = gray_license_plate > threshold_value #Create 
+
+print(threshold_value)
+
+plt.figure()
+plt.imshow(binary_license_plate, cmap='gray')
+plt.title("Binary License Plate")
+plt.axis('off')
+plt.show()
+
+binary_license_plate[-10:, :] = True
+
+plt.figure()
+plt.imshow(binary_license_plate, cmap='gray')
+plt.title("Binary License Plate")
+plt.axis('off')
+plt.show()
+
 
 
 
@@ -53,7 +80,7 @@ if len(cca2.plate_like_objects) > 1:
 
 
 # the invert was done so as to convert the black pixel to white pixel and vice versa
-license_plate = np.invert(cca2.plate_like_objects[licensePlateIndex]) #invert the license plate image so the black pixels become white and vice versa
+license_plate = np.invert(binary_license_plate) #invert the license plate image so the black pixels become white and vice versa
 
 labelled_plate = measure.label(license_plate) #label connected regions in the binary license plate image
 
