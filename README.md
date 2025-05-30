@@ -1,4 +1,4 @@
-adding a test readme
+run prediction.py to read a license plate
 
 do this every time to push changes
 git add -A

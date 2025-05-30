@@ -4,7 +4,7 @@ from skimage import measure # import measure module for image region analysis
 from skimage.measure import regionprops # import regionproprs to get properties of labeled regions
 import matplotlib.patches as patches # import patches for drawing rectangles on images
 import matplotlib.pyplot as plt # import pyplot for plotting images
-from skimage.filters import threshold_otsu #import the Otsu thresholding function from skimage. This function calculates an optimal threshold value for creating a grayscale image using Otsu's method. This value separates the pixel intensities into two classes (foreground and background).
+from skimage.filters import * #import the Otsu thresholding function from skimage. This function calculates an optimal threshold value for creating a grayscale image using Otsu's method. This value separates the pixel intensities into two classes (foreground and background).
 import cca2 #import cca2 module (contains plate_like_objects)
 
 
@@ -31,9 +31,6 @@ def countChars(PLO):
 # print("chars in plo index 1", countChars(cca2.plate_like_objects[1]))
 # print("chars in plo index 2", countChars(cca2.plate_like_objects[2]))
 
-
-
-
 licensePlateIndex = 0
 if len(cca2.plate_like_objects) > 1:
     maxCount = countChars(cca2.plate_like_objects[0]) #maxCount variable to find plate_like_object with the most detected characters
@@ -58,7 +55,7 @@ gray_license_plate = cca2.gray_plate_like_objects[licensePlateIndex]
 threshold_value = threshold_otsu(gray_license_plate)
 binary_license_plate = gray_license_plate > threshold_value #Create 
 
-print(threshold_value)
+print("Threshold Value:", threshold_value)
 
 plt.figure()
 plt.imshow(binary_license_plate, cmap='gray')
@@ -153,7 +150,7 @@ for regions in regionprops(labelled_plate):#iterate through each detected region
         column_list.append(x0)
 
 plt.show()#show the plot
-print(counter)
+print("Characters Detected:", counter)
 
 #shows the resized characters -delete later
 if characters:
