@@ -5,11 +5,14 @@ git add -A
 git commit -m "commit message here"
 git push
 
-do this to create a virtual environment (mac)
-python3 -m venv env
+do this to create a virtual environment
+python3 -m venv env (mac)
+py -m venv env (windows)
 
-activate virtual environment (mac)
-source env/bin/activate
+activate virtual environment
+source env/bin/activate (mac)
+env\Scripts\activate (windows)
+
 
 
 update requirements.txt file
