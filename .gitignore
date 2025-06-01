@@ -22,7 +22,7 @@ var/
 *.egg
 
 # Training Data
-training_data/
+#training_data/
 
 # svc_model
 *.pkl
